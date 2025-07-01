@@ -1,0 +1,10 @@
+@{
+    Layout = "_Layout";
+}
+
+<h2>Person @ViewBag.Message</h2> 
+<form asp-action="Profile">
+    <input type="text" name="FullName" placeholder="Nhập họ và tên" required />
+    <input type="text" name="AddRess" placeholder="Nhập địa chỉ" />
+    <input type="submit" value="Gửi dữ liệu" />
+</form>
