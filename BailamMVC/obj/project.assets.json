@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ADMIN\\Desktop\\BaiLamMVC\\BailamMVC\\BailamMVC.csproj",
+      "projectUniqueName": "C:\\BaiLamMVC\\BailamMVC\\BailamMVC.csproj",
       "projectName": "BailamMVC",
-      "projectPath": "C:\\Users\\ADMIN\\Desktop\\BaiLamMVC\\BailamMVC\\BailamMVC.csproj",
+      "projectPath": "C:\\BaiLamMVC\\BailamMVC\\BailamMVC.csproj",
       "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ADMIN\\Desktop\\BaiLamMVC\\BailamMVC\\obj\\",
+      "outputPath": "C:\\BaiLamMVC\\BailamMVC\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config"
