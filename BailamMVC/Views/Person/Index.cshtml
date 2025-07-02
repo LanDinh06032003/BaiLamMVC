@@ -1,5 +1,9 @@
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h3>Đây là trang Person</h3>
+<form asp-action="Index">
+    <label>Nhập PersonID: </label>
+    <input type="text" name="PersonId" />
+    <label>Nhập họ tên: </label>
+    <input type="text" name="FullName" />
+    <label>Nhập địa chỉ: </label>
+    <input type="text" name="AddRess" />
+    <input type="submit" value="Gửi dữ liệu" />
+</form>
