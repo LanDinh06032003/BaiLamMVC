@@ -8,29 +8,61 @@ namespace BailamMVC.Controllers
     public class PersonController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public PersonController(ApplicationDbContext context) {
+
+        public PersonController(ApplicationDbContext context)
+        {
             _context = context;
         }
-        public async Task<IActionResult> Index() {
+        private async Task<string> GenerateNewPersonIdAsync()
+        {
+        var lastPerson = await _context.Person
+            .OrderByDescending(p => p.PersonId)
+            .FirstOrDefaultAsync();
+
+        string prefix = "PS";
+        int number = 1;
+
+        if (lastPerson != null && lastPerson.PersonId.Length > 2)
+        {
+            string numericPart = lastPerson.PersonId.Substring(2);
+            if (int.TryParse(numericPart, out int temp))
+            {
+                number = temp + 1;
+            }
+        }
+        return $"{prefix}{number.ToString("D3")}";
+        }
+
+        public async Task<IActionResult> Index()
+        {
             var model = await _context.Person.ToListAsync();
             return View(model);
         }
-        public IActionResult Create() {
-            return View();
+        public async Task<IActionResult> Create()
+        {
+            string newPersonId = await GenerateNewPersonIdAsync();
+            var person = new Person
+            {
+                PersonId = newPersonId
+            };
+            return View(person);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FullName, AddRess, Height")] Person person) {
+        public async Task<IActionResult> Create([Bind("FullName, AddRess, Height")] Person person)
+        {
+            person.PersonId = await GenerateNewPersonIdAsync();
             if (ModelState.IsValid)
             {
-                person.PersonId = Guid.NewGuid().ToString();
                 _context.Add(person);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(person);
         }
-        public async Task<IActionResult> Edit(string id) {
+
+        public async Task<IActionResult> Edit(string id)
+        {
             if (id == null || _context.Person == null)
             {
                 return NotFound();
@@ -46,7 +78,7 @@ namespace BailamMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("FullName, AddRess, Height")] Person person)
+        public async Task<IActionResult> Edit(string id, [Bind("PersonId, FullName, AddRess, Height")] Person person)
         {
             if (id != person.PersonId)
             {
@@ -75,33 +107,38 @@ namespace BailamMVC.Controllers
             }
             return View(person);
         }
-        public async Task<IActionResult> Delete(string id) {
+
+        public async Task<IActionResult> Delete(string id)
+        {
             if (id == null || _context.Person == null)
             {
                 return NotFound();
             }
 
             var person = await _context.Person.FirstOrDefaultAsync(m => m.PersonId == id);
+            if (person == null)
             {
-                if (_context.Person == null)
-                {
-                    return NotFound();
-                }
-                return View(person);
+                return NotFound();
             }
+
+            return View(person);
         }
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id) {
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
             if (_context.Person == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Person' is null.");
             }
+
             var person = await _context.Person.FindAsync(id);
             if (person != null)
             {
                 _context.Person.Remove(person);
             }
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -110,5 +147,4 @@ namespace BailamMVC.Controllers
             return (_context.Person?.Any(e => e.PersonId == id)).GetValueOrDefault();
         }
     }
-
 }
