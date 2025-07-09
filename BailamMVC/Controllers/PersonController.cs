@@ -20,9 +20,10 @@ namespace BailamMVC.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PersonId, FullName, AddRess")] Person person) {
+        public async Task<IActionResult> Create([Bind("FullName, AddRess, Height")] Person person) {
             if (ModelState.IsValid)
             {
+                person.PersonId = Guid.NewGuid().ToString();
                 _context.Add(person);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -45,7 +46,7 @@ namespace BailamMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("PersonId, FullName, AddRess")] Person person)
+        public async Task<IActionResult> Edit(string id, [Bind("FullName, AddRess, Height")] Person person)
         {
             if (id != person.PersonId)
             {

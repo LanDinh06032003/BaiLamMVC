@@ -11,5 +11,6 @@ namespace BailamMVC.Models
         public string? PersonId { get; set; } = Guid.NewGuid().ToString();
         public string? FullName { get; set; }
         public string? AddRess { get; set; }
+        public int Height { get; set; }
     }
 }
