@@ -8,7 +8,7 @@ namespace BailamMVC.Models
     public class Person
     {
         [Key]
-        public string? PersonId { get; set; }
+        public string? PersonId { get; set; } = Guid.NewGuid().ToString();
         public string? FullName { get; set; }
         public string? AddRess { get; set; }
     }
