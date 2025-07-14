@@ -1,57 +1,44 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using BailamMVC.Data;
-using BailamMVC.Models;
-
 namespace BailamMVC.Controllers
 {
+    using BailamMVC.Data;
+    using BailamMVC.Models;
+    using BailamMVC.Models.Entities;
+    using BailamMVC.Models.Process;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using System.Threading.Tasks;
+
     public class PersonController : Controller
     {
         private readonly ApplicationDbContext _context;
-
         public PersonController(ApplicationDbContext context)
         {
             _context = context;
         }
-        private async Task<string> GenerateNewPersonIdAsync()
-        {
-        var lastPerson = await _context.Person
-            .OrderByDescending(p => p.PersonId)
-            .FirstOrDefaultAsync();
 
-        string prefix = "PS";
-        int number = 1;
-
-        if (lastPerson != null && lastPerson.PersonId.Length > 2)
-        {
-            string numericPart = lastPerson.PersonId.Substring(2);
-            if (int.TryParse(numericPart, out int temp))
-            {
-                number = temp + 1;
-            }
-        }
-        return $"{prefix}{number.ToString("D3")}";
-        }
-
+        // GET: Person
         public async Task<IActionResult> Index()
         {
-            var model = await _context.Person.ToListAsync();
-            return View(model);
+            return View(await _context.Person.ToListAsync());
         }
-        public async Task<IActionResult> Create()
+
+        //create a new person
+        public IActionResult Create()
         {
-            string newPersonId = await GenerateNewPersonIdAsync();
-            var person = new Person
+            var person = _context.Person.OrderByDescending(p => p.PersonId).FirstOrDefault();
+            var PersonId = person == null ? "PS0" : person.PersonId;
+            var autoGenerateId = new AutoGenerateId();
+            var newPersonId = autoGenerateId.GenerateId(PersonId);
+            var newPerson = new Person
             {
                 PersonId = newPersonId
             };
-            return View(person);
+            return View(newPerson);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FullName, AddRess, Height")] Person person)
+        public async Task<IActionResult> Create([Bind("PersonId,FullName,AddRess,Height")] Person person)
         {
-            person.PersonId = await GenerateNewPersonIdAsync();
             if (ModelState.IsValid)
             {
                 _context.Add(person);
@@ -59,92 +46,6 @@ namespace BailamMVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(person);
-        }
-
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null || _context.Person == null)
-            {
-                return NotFound();
-            }
-
-            var person = await _context.Person.FindAsync(id);
-            if (person == null)
-            {
-                return NotFound();
-            }
-            return View(person);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("PersonId, FullName, AddRess, Height")] Person person)
-        {
-            if (id != person.PersonId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(person);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PersonExists(person.PersonId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(person);
-        }
-
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null || _context.Person == null)
-            {
-                return NotFound();
-            }
-
-            var person = await _context.Person.FirstOrDefaultAsync(m => m.PersonId == id);
-            if (person == null)
-            {
-                return NotFound();
-            }
-
-            return View(person);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            if (_context.Person == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Person' is null.");
-            }
-
-            var person = await _context.Person.FindAsync(id);
-            if (person != null)
-            {
-                _context.Person.Remove(person);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-        private bool PersonExists(string id)
-        {
-            return (_context.Person?.Any(e => e.PersonId == id)).GetValueOrDefault();
         }
     }
 }

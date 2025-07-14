@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using BailamMVC.Models;
+using BailamMVC.Models.Entities;
 
 namespace BailamMVC.Data
 {
@@ -9,7 +10,7 @@ namespace BailamMVC.Data
         {
 
         }
-        public DbSet<Person> Person { get; set; }
-        public DbSet<Employee> Employee { get; set; }
+        public DbSet<Person> Person { get; set; } = null!;
+        public DbSet<Employee> Employee { get; set; } = null!;
     }
 }
