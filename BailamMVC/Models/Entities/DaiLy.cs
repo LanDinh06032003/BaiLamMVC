@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-namespace BailamMVC.Models;
-
+namespace BailamMVC.Models.Entities;
 public class DaiLy
 {
     [Key]
@@ -13,5 +12,4 @@ public class DaiLy
     [ForeignKey("HeThongPhanPhoi")]
     public string? MaHTTP { get; set; }
     // dùng để thiết lập mối quan hệ giữa hai thực thể
-    public HeThongPhanPhoi? HeThongPhanPhoi { get; set; }
 }

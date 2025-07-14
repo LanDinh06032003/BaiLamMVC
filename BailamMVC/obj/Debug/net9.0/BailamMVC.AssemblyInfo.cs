@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BailamMVC")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c5ac4ce97332de48bb72d81412c33f2d65aa2252")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3ff3dda3285678aec0a3d9bd53f638ea83610639")]
 [assembly: System.Reflection.AssemblyProductAttribute("BailamMVC")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BailamMVC")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
