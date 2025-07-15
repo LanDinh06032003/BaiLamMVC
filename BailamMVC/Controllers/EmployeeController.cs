@@ -45,7 +45,20 @@ namespace BailamMVC.Controllers
             }
             return View(employee);
         }
+        public async Task<IActionResult> Edit(string id) {
+            if (id == null || _context.Employee == null)
+            {
+                return NotFound();
+            }
+            var employee = await _context.Employee.FindAsync(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            return View(employee);
+        }
     }
 }
+
 
     
