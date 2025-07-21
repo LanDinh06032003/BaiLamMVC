@@ -3,7 +3,7 @@ namespace BailamMVC.Controllers
     using BailamMVC.Data;
     using BailamMVC.Models;
     using BailamMVC.Models.Entities;
-    using BailamMVC.Models.Process;
+    using BailamMVC.Models.Process; 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ModelBinding;
     using Microsoft.EntityFrameworkCore;
@@ -58,36 +58,47 @@ namespace BailamMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            if (file != null)
+        if (file != null)
+        {
+            string fileExtension = Path.GetExtension(file.FileName);
+            if (fileExtension != ".xls" && fileExtension != ".xlsx")
             {
-                string fileExtension = Path.GetExtension(file.FileName);
-                if (fileExtension != ".xls" && fileExtension != ".xlsx")
-                {
-                    ModelState.AddModelError("", "Please choose excel file to upload!");
-                }
-                else
-                {
-                    var fileName = DateTime.Now.ToShortTimeString() + fileExtension;
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory() + "/Uploads/Excels", fileName);
-                    var fileLocation = new FileInfo(filePath).ToString();
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                        var dt = _excelProcess.ExcelToDataTable(fileLocation);
-                        for (int i = 0; i < dt.Rows.Count; i++)
-                        {
-                            var ps = new Person();
-                            ps.PersonId = dt.Rows[i][0].ToString();
-                            ps.FullName = dt.Rows[i][1].ToString();
-                            ps.AddRess = dt.Rows[i][2].ToString();
-                            _context.Add(ps);
-                        }
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
-                    }
-                }
+                ModelState.AddModelError("", "Please choose excel file to upload!");
             }
-            return View();
+            else
+            {
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Excels");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                var fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + fileExtension;
+                var filePath = Path.Combine(folderPath, fileName);
+                var fileLocation = new FileInfo(filePath).ToString();
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                var dt = _excelProcess.ExcelToDataTable(fileLocation);
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    var ps = new Person
+                    {
+                        PersonId = dt.Rows[i][0].ToString(),
+                        FullName = dt.Rows[i][1].ToString(),
+                        AddRess = dt.Rows[i][2].ToString()
+                    };
+                    _context.Add(ps);
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+        }
+        return View();
         }
         public IActionResult Download()
         {

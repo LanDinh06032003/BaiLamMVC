@@ -35,7 +35,6 @@ namespace BailamMVC.Models.Process
                 dt.Columns.Add(columnName);
                 currentColumn++;
             }
-
             for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
             {
                 var row = worksheet.Cells[i, 1, i, worksheet.Dimension.End.Column];
