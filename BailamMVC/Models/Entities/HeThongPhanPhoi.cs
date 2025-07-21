@@ -1,12 +1,14 @@
 using System.ComponentModel.DataAnnotations;
-namespace BailamMVC.Models.Entities.HeThongPhanPhoi;
-
-public class HeThongPhanPhoi
+using BailamMVC.Models.ViewModels;
+namespace BailamMVC.Models.Entities
 {
-    [Key]
-    public string? MaHTTP { get; set; }
-    public string? TenHTPP { get; set; }
-    
-    // Quan hệ 1 - N: Một HTPP có nhiều Đại lý
-    public List<DaiLy>? DaiLy { get; set; }
+    public class HeThongPhanPhoi
+    {
+        [Key]
+        [Display(Name = "Mã Hệ Thống Phân Phối")]
+        public string MaHTPP { get; set; }
+        [Display(Name = "Tên Hệ Thống Phân Phối")]
+        public string TenHTPP { get; set; }
+        public ICollection<DaiLy>? DaiLy { get; set; }
+    }
 }

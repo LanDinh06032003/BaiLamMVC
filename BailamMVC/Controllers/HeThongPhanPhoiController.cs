@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BailamMVC.Data;
-using BailamMVC.Models.Entities.HeThongPhanPhoi;
+using BailamMVC.Models.Entities;
 
-namespace BailamMVC.Controllers
+namespace DemoMVC.Controllers
 {
     public class HeThongPhanPhoiController : Controller
     {
@@ -34,7 +34,7 @@ namespace BailamMVC.Controllers
             }
 
             var heThongPhanPhoi = await _context.HeThongPhanPhoi
-                .FirstOrDefaultAsync(m => m.MaHTTP == id);
+                .FirstOrDefaultAsync(m => m.MaHTPP == id);
             if (heThongPhanPhoi == null)
             {
                 return NotFound();
@@ -54,7 +54,7 @@ namespace BailamMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaHTTP,TenHTPP")] HeThongPhanPhoi heThongPhanPhoi)
+        public async Task<IActionResult> Create([Bind("MaHTPP,TenHTPP")] HeThongPhanPhoi heThongPhanPhoi)
         {
             if (ModelState.IsValid)
             {
@@ -86,9 +86,9 @@ namespace BailamMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaHTTP,TenHTPP")] HeThongPhanPhoi heThongPhanPhoi)
+        public async Task<IActionResult> Edit(string id, [Bind("MaHTPP,TenHTPP")] HeThongPhanPhoi heThongPhanPhoi)
         {
-            if (id != heThongPhanPhoi.MaHTTP)
+            if (id != heThongPhanPhoi.MaHTPP)
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace BailamMVC.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!HeThongPhanPhoiExists(heThongPhanPhoi.MaHTTP))
+                    if (!HeThongPhanPhoiExists(heThongPhanPhoi.MaHTPP))
                     {
                         return NotFound();
                     }
@@ -125,7 +125,7 @@ namespace BailamMVC.Controllers
             }
 
             var heThongPhanPhoi = await _context.HeThongPhanPhoi
-                .FirstOrDefaultAsync(m => m.MaHTTP == id);
+                .FirstOrDefaultAsync(m => m.MaHTPP == id);
             if (heThongPhanPhoi == null)
             {
                 return NotFound();
@@ -151,7 +151,7 @@ namespace BailamMVC.Controllers
 
         private bool HeThongPhanPhoiExists(string id)
         {
-            return _context.HeThongPhanPhoi.Any(e => e.MaHTTP == id);
+            return _context.HeThongPhanPhoi.Any(e => e.MaHTPP == id);
         }
     }
 }

@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using BailamMVC.Models.Entities;
-using BailamMVC.Models.Entities.HeThongPhanPhoi;
 
 namespace BailamMVC.Data
 {

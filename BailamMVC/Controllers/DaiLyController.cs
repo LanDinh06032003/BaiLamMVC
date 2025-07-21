@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BailamMVC.Data;
 using BailamMVC.Models.Entities;
+using BailamMVC.Models.ViewModels;
 
 namespace BailamMVC.Controllers
 {
@@ -22,7 +23,21 @@ namespace BailamMVC.Controllers
         // GET: DaiLy
         public async Task<IActionResult> Index()
         {
-            return View(await _context.DaiLy.ToListAsync());
+            var applicationDbContext = _context.DaiLy.Include(d => d.HTPP);
+            return View(await applicationDbContext.ToListAsync());
+        }
+        public async Task<IActionResult> Index2()
+        {
+            var daiLyList = await _context.DaiLy
+                .Include(d => d.HTPP)
+                .Select(d => new DaiLyVM
+                {
+                    MaDaiLy = d.MaDaiLy,
+                    TenDaiLy = d.TenDaiLy,
+                    TenHTPP = d.HTPP != null ? d.HTPP.TenHTPP : "Không có hệ thống phân phối"
+                })
+                .ToListAsync();
+            return View(daiLyList);
         }
 
         // GET: DaiLy/Details/5
@@ -34,6 +49,7 @@ namespace BailamMVC.Controllers
             }
 
             var daiLy = await _context.DaiLy
+                .Include(d => d.HTPP)
                 .FirstOrDefaultAsync(m => m.MaDaiLy == id);
             if (daiLy == null)
             {
@@ -46,6 +62,7 @@ namespace BailamMVC.Controllers
         // GET: DaiLy/Create
         public IActionResult Create()
         {
+            ViewData["MaHTPP"] = new SelectList(_context.HeThongPhanPhoi, "MaHTPP", "TenHTPP");
             return View();
         }
 
@@ -54,7 +71,7 @@ namespace BailamMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaDaiLy,TenDaiLy,DiaChi,NguoiDaiDien,DienThoai,MaHTTP")] DaiLy daiLy)
+        public async Task<IActionResult> Create([Bind("MaDaiLy,TenDaiLy,DiaChi,NguoiDaiDien,DienThoai,MaHTPP")] DaiLy daiLy)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +79,7 @@ namespace BailamMVC.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["MaHTPP"] = new SelectList(_context.HeThongPhanPhoi, "MaHTPP", "MaHTPP", daiLy.MaHTPP);
             return View(daiLy);
         }
 
@@ -78,6 +96,7 @@ namespace BailamMVC.Controllers
             {
                 return NotFound();
             }
+            ViewData["MaHTPP"] = new SelectList(_context.HeThongPhanPhoi, "MaHTPP", "MaHTPP", daiLy.MaHTPP);
             return View(daiLy);
         }
 
@@ -86,7 +105,7 @@ namespace BailamMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaDaiLy,TenDaiLy,DiaChi,NguoiDaiDien,DienThoai,MaHTTP")] DaiLy daiLy)
+        public async Task<IActionResult> Edit(string id, [Bind("MaDaiLy,TenDaiLy,DiaChi,NguoiDaiDien,DienThoai,MaHTPP")] DaiLy daiLy)
         {
             if (id != daiLy.MaDaiLy)
             {
@@ -113,6 +132,7 @@ namespace BailamMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["MaHTPP"] = new SelectList(_context.HeThongPhanPhoi, "MaHTPP", "MaHTPP", daiLy.MaHTPP);
             return View(daiLy);
         }
 
@@ -125,6 +145,7 @@ namespace BailamMVC.Controllers
             }
 
             var daiLy = await _context.DaiLy
+                .Include(d => d.HTPP)
                 .FirstOrDefaultAsync(m => m.MaDaiLy == id);
             if (daiLy == null)
             {

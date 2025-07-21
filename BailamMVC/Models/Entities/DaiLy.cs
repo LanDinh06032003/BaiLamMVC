@@ -1,15 +1,23 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-namespace BailamMVC.Models.Entities;
-public class DaiLy
+using BailamMVC.Models.ViewModels;
+namespace BailamMVC.Models.Entities
 {
-    [Key]
-    public string? MaDaiLy { get; set; }
-    public string? TenDaiLy { get; set; }
-    public string? DiaChi { get; set; }
-    public string? NguoiDaiDien { get; set; }
-    public string? DienThoai { get; set; }
-    [ForeignKey("HeThongPhanPhoi")]
-    public string? MaHTTP { get; set; }
-    // dùng để thiết lập mối quan hệ giữa hai thực thể
+    public class DaiLy
+    {
+        [Key]
+        [Display(Name = "Mã Đại Lý")]
+        public string MaDaiLy { get; set; }
+        [Display(Name = "Tên Đại Lý")]
+        public string TenDaiLy { get; set; }
+        [Display(Name = "Địa Chỉ")]
+        public string DiaChi { get; set; }
+        public string NguoiDaiDien { get; set; }
+        public string DienThoai { get; set; }
+        [ForeignKey("MaHTPP")]
+        [Display(Name = "Mã Hệ Thống Phân Phối")]
+        public string? MaHTPP { get; set; }
+        [ForeignKey("MaHTPP")]
+        public HeThongPhanPhoi? HTPP { get; set; }
+    }
 }
